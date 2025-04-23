@@ -36,3 +36,6 @@ TO_EMAIL="dev_team@xyx.com"                # Email recipient
 FROM_EMAIL="deployment@xyz.com"            # Sender email (used by msmtp)
 LOG_FILE="/var/log/s3_sync.log"            # Log file location
 
+#add in cronjob
+59 23 * * * /root/s3_synch.sh
+
