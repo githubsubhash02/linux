@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-REPORT="logs/audit_report.txt"
+REPORT="../logs/audit_report.txt"
 mkdir -p logs
 
 echo "Linux Security Audit Report - $(date)" > $REPORT

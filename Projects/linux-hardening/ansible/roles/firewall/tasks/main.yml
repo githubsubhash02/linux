@@ -1,0 +1,41 @@
+- name: Ensure firewalld is installed
+  package:
+    name: firewalld
+    state: present
+
+- name: Ensure firewalld is enabled and started
+  service:
+    name: firewalld
+    state: started
+    enabled: yes
+
+- name: Allow SSH
+  firewalld:
+    service: ssh
+    permanent: true
+    state: enabled
+    immediate: yes
+
+- name: Allow HTTP
+  firewalld:
+    service: http
+    permanent: true
+    state: enabled
+    immediate: yes
+
+- name: Allow HTTPS
+  firewalld:
+    service: https
+    permanent: true
+    state: enabled
+    immediate: yes
+
+- name: Remove unused services (example: samba)
+  firewalld:
+    service: samba
+    permanent: true
+    state: disabled
+    immediate: yes
+
+- name: Reload firewalld to apply rules
+  command: firewall-cmd --reload

@@ -1,0 +1,74 @@
+
+- name: "Ensure /var/log has secure permissions"
+  file:
+    path: /var/log
+    owner: root
+    group: root
+    mode: '0750'
+
+- name: "Ensure /etc/passwd has correct permissions"
+  file:
+    path: /etc/passwd
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: "Ensure /etc/shadow has correct permissions"
+  file:
+    path: /etc/shadow
+    owner: root
+    group: shadow
+    mode: '0640'
+
+- name: "Ensure /etc/group has correct permissions"
+  file:
+    path: /etc/group
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: "Ensure /etc/gshadow has correct permissions"
+  file:
+    path: /etc/gshadow
+    owner: root
+    group: shadow
+    mode: '0640'
+
+- name: "Find world-writable files (excluding system dirs)"
+  find:
+    paths: /
+    recurse: yes
+    file_type: file
+    permissions: 'o+w'
+    excludes: ['/proc', '/sys', '/dev', '/run']
+  register: world_writable_files
+
+- name: "Remove world-writable permissions"
+  file:
+    path: "{{ item.path }}"
+    mode: u=rw,g=r,o=r
+  loop: "{{ world_writable_files.files }}"
+  when: world_writable_files.matched > 0
+
+- name: "Ensure rsyslog is running"
+  service:
+    name: rsyslog
+    enabled: true
+    state: started
+
+- name: "Deploy hardened logrotate config"
+  copy:
+    dest: /etc/logrotate.conf
+    content: |
+      weekly
+      rotate 4
+      create
+      dateext
+      compress
+      include /etc/logrotate.d
+      notifempty
+      missingok
+    owner: root
+    group: root
+    mode: '0644'
+

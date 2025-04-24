@@ -1,0 +1,35 @@
+- name: Disable CUPS printing service
+  systemd:
+    name: cups
+    enabled: no
+    state: stopped
+    masked: yes
+
+- name: Disable rpcbind
+  systemd:
+    name: rpcbind
+    enabled: no
+    state: stopped
+    masked: yes
+
+- name: Disable avahi-daemon
+  systemd:
+    name: avahi-daemon
+    enabled: no
+    state: stopped
+    masked: yes
+
+- name: Disable postfix
+  systemd:
+    name: postfix
+    enabled: no
+    state: stopped
+    masked: yes
+
+- name: Disable chronyd if using other NTP
+  systemd:
+    name: chronyd
+    enabled: no
+    state: stopped
+    masked: yes
+  when: ansible_service_mgr == 'systemd'
